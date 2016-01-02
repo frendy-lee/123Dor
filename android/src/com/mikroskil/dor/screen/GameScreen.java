@@ -423,7 +423,7 @@ public class GameScreen extends AbstractScreen{
                     cowboy.setState(Cowboy.State.IDLE);
                     flagFinishShot = true;
                 }else if (cowboy.getCowboyId() == touchId) { //Cowboy who get touch in time
-                    if(!cowboy.isFlagShot() && !cowboy.isFlagHit()) { //Cowboy who follow rule
+                    if(!cowboy.isFlagShot() && !cowboy.isFlagHit() && winId==0) { //Cowboy who follow rule
                         cowboy.setState(Cowboy.State.SHOOT);
                         cowboy.addScore();
                         cowboy.setFlagShot(true);

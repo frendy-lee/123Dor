@@ -42,22 +42,22 @@ public class LevelSelectScreen extends AbstractScreen {
         //position is from bottom left ( x from left, y from bottom )
         ImageButton btnClassic = UIFactory.createButton(txtrClassic);
         btnClassic.setPosition(180, 140.f, Align.center);
-        btnClassic.setSize(50, 100);
+        btnClassic.setSize(50, 30);
         addActor(btnClassic);
 
         ImageButton btnFirstto1 = UIFactory.createButton(txtrFirstto1);
         btnFirstto1.setPosition(180, 110.f, Align.center);
-        btnFirstto1.setSize(50, 100);
+        btnFirstto1.setSize(50, 30);
         addActor(btnFirstto1);
 
         ImageButton btnFirstto3 = UIFactory.createButton(txtrFirstto3);
         btnFirstto3.setPosition(180, 80.f, Align.center);
-        btnFirstto3.setSize(50, 100);
+        btnFirstto3.setSize(50, 30);
         addActor(btnFirstto3);
 
         ImageButton btnFirstto5 = UIFactory.createButton(txtrFirstto5);
         btnFirstto5.setPosition(180, 50.f, Align.center);
-        btnFirstto5.setSize(50, 100);
+        btnFirstto5.setSize(50, 30);
         addActor(btnFirstto5);
 
         btnBack.addListener(UIFactory.createListener(ScreenEnum.MAIN_MENU));
