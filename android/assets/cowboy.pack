@@ -1,0 +1,173 @@
+
+cowboy.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+dead-sprite
+  rotate: false
+  xy: 1, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 1
+dead-sprite
+  rotate: false
+  xy: 1, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 2
+dead-sprite
+  rotate: false
+  xy: 83, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 3
+dead-sprite
+  rotate: false
+  xy: 1, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 4
+dead-sprite
+  rotate: false
+  xy: 83, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 5
+dead-sprite
+  rotate: false
+  xy: 165, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 6
+dead-sprite
+  rotate: false
+  xy: 83, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 7
+dead-sprite
+  rotate: false
+  xy: 165, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 8
+dead-sprite
+  rotate: false
+  xy: 247, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 9
+shooting-sprite
+  rotate: false
+  xy: 165, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 1
+shooting-sprite
+  rotate: false
+  xy: 247, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 2
+shooting-sprite
+  rotate: false
+  xy: 329, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 3
+shooting-sprite
+  rotate: false
+  xy: 247, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 4
+standing-sprite
+  rotate: false
+  xy: 329, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+win-sprite
+  rotate: false
+  xy: 411, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 1
+win-sprite
+  rotate: false
+  xy: 329, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 2
+win-sprite
+  rotate: false
+  xy: 411, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 3
+win-sprite
+  rotate: false
+  xy: 493, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 4
+win-sprite
+  rotate: false
+  xy: 411, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 5
+win-sprite
+  rotate: false
+  xy: 493, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 6
+win-sprite
+  rotate: false
+  xy: 575, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 7
+win-sprite
+  rotate: false
+  xy: 493, 1
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 8
+win-sprite
+  rotate: false
+  xy: 575, 83
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 9
+win-sprite
+  rotate: false
+  xy: 657, 165
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: 10
