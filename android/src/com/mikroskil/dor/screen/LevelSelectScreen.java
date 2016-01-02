@@ -13,15 +13,19 @@ public class LevelSelectScreen extends AbstractScreen {
 
     private Texture txtrBg;
     private Texture txtrBack;
-    private Texture txtrLevel1;
-    private Texture txtrLevel2;
+    private Texture txtrClassic;
+    private Texture txtrFirstto1;
+    private Texture txtrFirstto3;
+    private Texture txtrFirstto5;
 
     public LevelSelectScreen() {
         super();
         txtrBg   = new Texture( Gdx.files.internal("img/level_select_bg.png") );
         txtrBack = new Texture( Gdx.files.internal("img/btn_back.png") );
-        txtrLevel1 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
-        txtrLevel2 = new Texture( Gdx.files.internal("img/btn_level_2.png") );
+        txtrClassic = new Texture( Gdx.files.internal("img/btn_level_2.png") );
+        txtrFirstto1 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
+        txtrFirstto3 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
+        txtrFirstto5 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
     }
 
     @Override
@@ -35,17 +39,32 @@ public class LevelSelectScreen extends AbstractScreen {
         btnBack.setPosition(260.f, 40.f, Align.center);
         addActor(btnBack);
 
-        ImageButton btnLevel1 = UIFactory.createButton(txtrLevel1);
-        btnLevel1.setPosition(100.f, 100.f, Align.center);
-        addActor(btnLevel1);
+        //position is from bottom left ( x from left, y from bottom )
+        ImageButton btnClassic = UIFactory.createButton(txtrClassic);
+        btnClassic.setPosition(180, 140.f, Align.center);
+        btnClassic.setSize(50, 100);
+        addActor(btnClassic);
 
-        ImageButton btnLevel2 = UIFactory.createButton(txtrLevel2);
-        btnLevel2.setPosition(220.f, 100.f, Align.center);
-        addActor(btnLevel2);
+        ImageButton btnFirstto1 = UIFactory.createButton(txtrFirstto1);
+        btnFirstto1.setPosition(180, 110.f, Align.center);
+        btnFirstto1.setSize(50, 100);
+        addActor(btnFirstto1);
 
-        btnBack.addListener( UIFactory.createListener( ScreenEnum.MAIN_MENU ) );
-        btnLevel1.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.CLASSIC) );
-        btnLevel2.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.FIRST_TO_1) );
+        ImageButton btnFirstto3 = UIFactory.createButton(txtrFirstto3);
+        btnFirstto3.setPosition(180, 80.f, Align.center);
+        btnFirstto3.setSize(50, 100);
+        addActor(btnFirstto3);
+
+        ImageButton btnFirstto5 = UIFactory.createButton(txtrFirstto5);
+        btnFirstto5.setPosition(180, 50.f, Align.center);
+        btnFirstto5.setSize(50, 100);
+        addActor(btnFirstto5);
+
+        btnBack.addListener(UIFactory.createListener(ScreenEnum.MAIN_MENU));
+        btnClassic.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.CLASSIC) );
+        btnFirstto1.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.FIRST_TO_1) );
+        btnFirstto3.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.FIRST_TO_3) );
+        btnFirstto5.addListener( UIFactory.createListener(ScreenEnum.GAME, GameMode.GameType.FIRST_TO_5) );
     }
 
     @Override
@@ -53,7 +72,9 @@ public class LevelSelectScreen extends AbstractScreen {
         super.dispose();
         txtrBg.dispose();
         txtrBack.dispose();
-        txtrLevel1.dispose();
-        txtrLevel2.dispose();
+        txtrClassic.dispose();
+        txtrFirstto1.dispose();
+        txtrFirstto3.dispose();
+        txtrFirstto5.dispose();
     }
 }

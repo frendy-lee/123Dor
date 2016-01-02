@@ -11,11 +11,6 @@ public class CowboyDor extends Game {
     public BitmapFont font;
 
     public void create() {
-        /*batch = new SpriteBatch();
-        //Use LibGDX's default Arial font.
-        font = new BitmapFont();
-        this.setScreen(new MainMenuScreen(this));*/
-
         ScreenManager.getInstance().initialize(this);
         ScreenManager.getInstance().showScreen( ScreenEnum.MAIN_MENU );
     }
