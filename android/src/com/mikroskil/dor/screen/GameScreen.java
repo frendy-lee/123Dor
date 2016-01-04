@@ -1,5 +1,7 @@
 package com.mikroskil.dor.screen;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -418,12 +420,14 @@ public class GameScreen extends AbstractScreen{
                 scoreBoardText += "Round: " + gameMode.getRound();
         }else if(flagStartShot){
             scoreBoardText="";
+            //search for winner cowboy
             for (Cowboy cowboy : world.getCowboys()) {
                 if(flagDrawShot) {
                     cowboy.setState(Cowboy.State.IDLE);
                     flagFinishShot = true;
                 }else if (cowboy.getCowboyId() == touchId) { //Cowboy who get touch in time
-                    if(!cowboy.isFlagShot() && !cowboy.isFlagHit() && winId==0) { //Cowboy who follow rule
+                    Log.d("TOUCH COWBOY ID", Integer.toString(cowboy.getCowboyId()));
+                    if(!cowboy.isFlagShot() && winId==0) { //Cowboy who follow rule
                         cowboy.setState(Cowboy.State.SHOOT);
                         cowboy.addScore();
                         cowboy.setFlagShot(true);
@@ -436,17 +440,16 @@ public class GameScreen extends AbstractScreen{
                         //cowboy do nothing
                     }else{ //Cowboy who win at the round and still get touch
                         //cowboy do nothing
-                    }
-                }else{  //Cowboy who not first touch
-                    //check if this is the winner cowboy
-                    if(winId == 0 || winId != cowboy.getCowboyId()) {
-                        //Cowboy automatically lost
-                        cowboy.setState(Cowboy.State.LOSE);
                         missSound.play();
                     }
                 }
-
                 scoreBoardText+= "P"+cowboy.getCowboyId()+": " + cowboy.getScore() + " ; ";
+            }
+            //search for lose cowboy
+            for (Cowboy cowboy : world.getCowboys()) {
+                if(!flagDrawShot && winId != cowboy.getCowboyId() && winId != 0){
+                    cowboy.setState(Cowboy.State.LOSE);
+                }
             }
 
             if(gameMode.getGameType().equals(GameMode.GameType.CLASSIC))
