@@ -2,11 +2,32 @@
 <items version="2" >
 
     <item
-        jar="G:\Android\GAME DEVELOPMENT\core\build\libs\core-1.0.jar"
+        jar="C:\Users\sir.lie\AndroidStudioProjects\123Dor\core\build\libs\core-1.0.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="ebc183f887315187368981c05ddb3bcde4a5225b">
-        <dex dex="G:\Android\GAME DEVELOPMENT\android\build\intermediates\pre-dexed\debug\core-1.0-edde59ad3ba3bcda9587b1134545e93655246c60.jar" />
+        sha1="0f1cb02ed45be0f7b05fbc47af8bd7dfd15d28a6">
+        <dex dex="C:\Users\sir.lie\AndroidStudioProjects\123Dor\android\build\intermediates\pre-dexed\debug\core-1.0-10589954800b336dea80eaf74075fcf2528efae0.jar" />
+    </item>
+    <item
+        jar="C:\Users\sir.lie\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-backend-android\1.7.2\5211971f79423cda216422e62c1ec8684603c3b2\gdx-backend-android-1.7.2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="5211971f79423cda216422e62c1ec8684603c3b2">
+        <dex dex="C:\Users\sir.lie\AndroidStudioProjects\123Dor\android\build\intermediates\pre-dexed\debug\gdx-backend-android-1.7.2-0dec39113057b1d12a9c6aa21dbbfa8502707b03.jar" />
+    </item>
+    <item
+        jar="C:\Users\sir.lie\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-box2d\1.7.2\275914cb71c76e4d3ce1e4037cf8a9cce8f7c842\gdx-box2d-1.7.2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="275914cb71c76e4d3ce1e4037cf8a9cce8f7c842">
+        <dex dex="C:\Users\sir.lie\AndroidStudioProjects\123Dor\android\build\intermediates\pre-dexed\debug\gdx-box2d-1.7.2-378a84c0c6d68813b921db281821549b658d9a4d.jar" />
+    </item>
+    <item
+        jar="C:\Users\sir.lie\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx\1.7.2\ccf86a454b5ce7029c243da22f432f2edca0a34e\gdx-1.7.2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ccf86a454b5ce7029c243da22f432f2edca0a34e">
+        <dex dex="C:\Users\sir.lie\AndroidStudioProjects\123Dor\android\build\intermediates\pre-dexed\debug\gdx-1.7.2-49f112c8efb95a730cb743eda171a32e84a47a74.jar" />
     </item>
 
 </items>

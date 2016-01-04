@@ -32,24 +32,25 @@ public class MainMenuScreen extends AbstractScreen {
         addActor(bg);
 
         ImageButton btnPlay = UIFactory.createButton(txtrPlay);
-        btnPlay.setPosition(getWidth() / 2, 120.f, Align.center);
+        // btnPlay.setPosition(getWidth() / 2, 120.f, Align.center);
+        btnPlay.setPosition(getWidth() / 2, 80.f, Align.center);
         addActor(btnPlay);
 
-        ImageButton btnExit = UIFactory.createButton(txtrExit);
-        btnExit.setPosition(getWidth() / 2, 60.f, Align.center);
-        addActor(btnExit);
+        // ImageButton btnExit = UIFactory.createButton(txtrExit);
+        // btnExit.setPosition(getWidth() / 2, 60.f, Align.center);
+        // addActor(btnExit);
 
         // Setting listeners
         btnPlay.addListener( UIFactory.createListener(ScreenEnum.LEVEL_SELECT) );
 
-        btnExit.addListener(
-                new InputListener() {
-                    @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        Gdx.app.exit();
-                        return false;
-                    }
-                });
+        // btnExit.addListener(
+        //         new InputListener() {
+        //             @Override
+        //             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        //                 Gdx.app.exit();
+        //                 return false;
+        //             }
+        //         });
     }
 
     @Override
