@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -52,6 +53,8 @@ public class GameScreen extends AbstractScreen{
     private static final float CAMERA_HEIGHT = 7f;
     private World world;
     private OrthographicCamera cam;
+    public static Texture backgroundTexture;
+    public static Sprite backgroundSprite;
 
     //debug mode
     ShapeRenderer debugRenderer = new ShapeRenderer();
@@ -118,6 +121,7 @@ public class GameScreen extends AbstractScreen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         spriteBatch.begin();
+        drawBackground(spriteBatch);
         drawCounter(spriteBatch);
         drawCowboy();
         drawGame(spriteBatch);
@@ -139,6 +143,9 @@ public class GameScreen extends AbstractScreen{
      * load All Animation Texture
      */
     private void loadTextures(){
+        backgroundTexture = new Texture(Gdx.files.internal("img/game-bg.jpg"));
+        backgroundSprite = new Sprite(backgroundTexture);
+
         TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("cowboy.pack"));
         cowboyIdleLeft = atlas.findRegion("standing-sprite");
         cowboyIdleRight = new TextureRegion(cowboyIdleLeft);
@@ -370,6 +377,10 @@ public class GameScreen extends AbstractScreen{
         counterBitmap.getData().setScale(3, 3);
         counterBitmap.draw(batch, counterText, (Gdx.graphics.getWidth() / 2)-(glyphLayoutScore.width/2),
                 (Gdx.graphics.getHeight()/2)-(glyphLayoutScore.height/2));
+    }
+
+    private void drawBackground(SpriteBatch batch){
+        backgroundSprite.draw(batch);
     }
 
     /**

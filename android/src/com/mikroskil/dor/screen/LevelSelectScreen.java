@@ -20,12 +20,12 @@ public class LevelSelectScreen extends AbstractScreen {
 
     public LevelSelectScreen() {
         super();
-        txtrBg   = new Texture( Gdx.files.internal("img/level_select_bg.png") );
+        txtrBg   = new Texture( Gdx.files.internal("img/game-bg.jpg") );
         txtrBack = new Texture( Gdx.files.internal("img/btn_back.png") );
-        txtrClassic = new Texture( Gdx.files.internal("img/btn_level_2.png") );
-        txtrFirstto1 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
-        txtrFirstto3 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
-        txtrFirstto5 = new Texture( Gdx.files.internal("img/btn_level_1.png") );
+        txtrClassic = new Texture( Gdx.files.internal("img/classic.png") );
+        txtrFirstto1 = new Texture( Gdx.files.internal("img/first_to_1.png") );
+        txtrFirstto3 = new Texture( Gdx.files.internal("img/first_to_3.png") );
+        txtrFirstto5 = new Texture( Gdx.files.internal("img/first_to_5.png") );
     }
 
     @Override
@@ -33,31 +33,33 @@ public class LevelSelectScreen extends AbstractScreen {
 
         // Adding actors
         Image bg = new Image(txtrBg);
+        bg.setSize(480,360);
         addActor(bg);
 
         ImageButton btnBack = UIFactory.createButton(txtrBack);
         btnBack.setPosition(260.f, 40.f, Align.center);
+        btnBack.setSize(50, 30);
         addActor(btnBack);
 
         //position is from bottom left ( x from left, y from bottom )
         ImageButton btnClassic = UIFactory.createButton(txtrClassic);
-        btnClassic.setPosition(180, 140.f, Align.center);
-        btnClassic.setSize(50, 30);
+        btnClassic.setPosition(160, 200.f, Align.center);
+        btnClassic.setSize(80, 50);
         addActor(btnClassic);
 
         ImageButton btnFirstto1 = UIFactory.createButton(txtrFirstto1);
-        btnFirstto1.setPosition(180, 110.f, Align.center);
-        btnFirstto1.setSize(50, 30);
+        btnFirstto1.setPosition(160, 150.f, Align.center);
+        btnFirstto1.setSize(80, 50);
         addActor(btnFirstto1);
 
         ImageButton btnFirstto3 = UIFactory.createButton(txtrFirstto3);
-        btnFirstto3.setPosition(180, 80.f, Align.center);
-        btnFirstto3.setSize(50, 30);
+        btnFirstto3.setPosition(160, 100.f, Align.center);
+        btnFirstto3.setSize(80, 50);
         addActor(btnFirstto3);
 
         ImageButton btnFirstto5 = UIFactory.createButton(txtrFirstto5);
-        btnFirstto5.setPosition(180, 50.f, Align.center);
-        btnFirstto5.setSize(50, 30);
+        btnFirstto5.setPosition(160, 50.f, Align.center);
+        btnFirstto5.setSize(80, 50);
         addActor(btnFirstto5);
 
         btnBack.addListener(UIFactory.createListener(ScreenEnum.MAIN_MENU));

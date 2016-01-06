@@ -7,8 +7,6 @@ import com.mikroskil.dor.util.ScreenEnum;
 import com.mikroskil.dor.util.ScreenManager;
 
 public class CowboyDor extends Game {
-    public SpriteBatch batch;
-    public BitmapFont font;
 
     public void create() {
         ScreenManager.getInstance().initialize(this);
@@ -20,7 +18,5 @@ public class CowboyDor extends Game {
     }
 
     public void dispose() {
-        batch.dispose();
-        font.dispose();
     }
 }
