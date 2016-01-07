@@ -20,7 +20,7 @@ public class LevelSelectScreen extends AbstractScreen {
 
     public LevelSelectScreen() {
         super();
-        txtrBg   = new Texture( Gdx.files.internal("img/game-bg.jpg") );
+        txtrBg   = new Texture( Gdx.files.internal("img/game-bg-level.jpg") );
         txtrBack = new Texture( Gdx.files.internal("img/btn_back.png") );
         txtrClassic = new Texture( Gdx.files.internal("img/classic.png") );
         txtrFirstto1 = new Texture( Gdx.files.internal("img/first_to_1.png") );
