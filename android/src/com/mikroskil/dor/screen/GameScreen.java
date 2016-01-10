@@ -18,12 +18,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.mikroskil.dor.Cowboy;
 import com.mikroskil.dor.GameMode;
 import com.mikroskil.dor.World;
 import com.mikroskil.dor.util.ScreenEnum;
 import com.mikroskil.dor.util.ScreenManager;
+import com.mikroskil.dor.util.UIFactory;
 
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -46,6 +51,8 @@ public class GameScreen extends AbstractScreen{
     //Cowboy Texture for left and right player
     private TextureRegion cowboyIdleLeft;
     private TextureRegion cowboyIdleRight;
+    private TextureRegion cowboyHideLeft;
+    private TextureRegion cowboyHideRight;
     private TextureRegion currentFrame;
 
     //world display on screen
@@ -111,7 +118,6 @@ public class GameScreen extends AbstractScreen{
         stateTime =0 ;
         loadTextures();
         loadSound();
-        Gdx.input.setInputProcessor(this);
         loadGameMode();
     }
 
@@ -127,6 +133,8 @@ public class GameScreen extends AbstractScreen{
         drawGame(spriteBatch);
         spriteBatch.end();
 
+        this.draw();
+
         if(debug)
             drawDebug();
     }
@@ -137,6 +145,8 @@ public class GameScreen extends AbstractScreen{
         this.height = h;
         ppuX = (float)width / CAMERA_WIDTH;
         ppuY = (float)height / CAMERA_HEIGHT;
+        Log.d("HEIGHT", Float.toString(ppuX));
+        Log.d("WIDTH", Float.toString(ppuY));
     }
 
     /**
@@ -150,6 +160,10 @@ public class GameScreen extends AbstractScreen{
         cowboyIdleLeft = atlas.findRegion("standing-sprite");
         cowboyIdleRight = new TextureRegion(cowboyIdleLeft);
         cowboyIdleRight.flip(true, false);
+        cowboyHideLeft = atlas.findRegion("hide-sprite");
+        cowboyHideRight = new TextureRegion(cowboyHideLeft);
+        cowboyHideRight.flip(true, false);
+
         TextureRegion[] shootingRightFrames = new TextureRegion[4];
         TextureRegion[] winRightFrames = new TextureRegion[10];
         TextureRegion[] shootingLeftFrames = new TextureRegion[4];
@@ -296,12 +310,19 @@ public class GameScreen extends AbstractScreen{
             Animation animation;
             if(i==1) { //right side cowboy
                 animation = getAnimation(cowboy.getState(), "left");
-                if(animation == null)
-                    currentFrame = cowboyIdleRight;
+                if(animation == null) {
+                    if(cowboy.getState().equals(Cowboy.State.HIDE))
+                        currentFrame = cowboyHideRight;
+                    else
+                        currentFrame = cowboyIdleRight;
+                }
             }else{     //left side cowboy
                 animation = getAnimation(cowboy.getState(), "right");
                 if(animation == null)
-                    currentFrame = cowboyIdleLeft;
+                    if(cowboy.getState().equals(Cowboy.State.HIDE))
+                        currentFrame = cowboyHideLeft;
+                    else
+                        currentFrame = cowboyIdleLeft;
             }
 
             if (animation != null) {
@@ -342,7 +363,7 @@ public class GameScreen extends AbstractScreen{
 
     private void drawCounter(SpriteBatch batch){
         if(flagDrawShot) {
-            counterText = "Guys... \nWait For My Mark";
+            counterText = "Draw!";
         }else if(flagCounterStart){
             counterStateTime += Gdx.graphics.getDeltaTime();
             if(Math.ceil(counterStateTime) <= 3) {
@@ -375,8 +396,8 @@ public class GameScreen extends AbstractScreen{
         glyphLayoutScore.setText(counterBitmap, counterText);
         counterBitmap.setColor(1, 1, 1, 1);
         counterBitmap.getData().setScale(3, 3);
-        counterBitmap.draw(batch, counterText, (Gdx.graphics.getWidth() / 2)-(glyphLayoutScore.width/2),
-                (Gdx.graphics.getHeight()/2)-(glyphLayoutScore.height/2));
+        counterBitmap.draw(batch, counterText, (Gdx.graphics.getWidth() / 2) - (glyphLayoutScore.width / 2),
+                (Gdx.graphics.getHeight() / 2) - (glyphLayoutScore.height / 2));
     }
 
     private void drawBackground(SpriteBatch batch){
@@ -400,17 +421,28 @@ public class GameScreen extends AbstractScreen{
         debugRenderer.end();
     }
 
-    @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-        int touchId;
-        if (screenX < (Gdx.graphics.getWidth() / 2)) {
-            touchId = 1;
-        } else {
-            touchId = 2;
+    private Cowboy getTouchedCowboy(int touchId){
+        for (Cowboy cowboy : world.getCowboys()) {
+            if(cowboy.getCowboyId() == touchId){
+                return cowboy;
+            }
         }
+        return null;
+    }
+    private Cowboy getEnemyCowboy(int touchId){
+        for (Cowboy cowboy : world.getCowboys()) {
+            if(cowboy.getCowboyId() != touchId){
+                return cowboy;
+            }
+        }
+        return null;
+    }
 
+
+
+    private void buttonTouch(int touchId, String buttonType){
         if(flagEndGame){
             ScreenManager.getInstance().showScreen(ScreenEnum.LEVEL_SELECT, null);
-            return false;
         }else if(flagDrawShot){
             loadGameMode();
             reloadSound.play();
@@ -431,105 +463,120 @@ public class GameScreen extends AbstractScreen{
                 scoreBoardText += "Round: " + gameMode.getRound();
         }else if(flagStartShot){
             scoreBoardText="";
-            //search for winner cowboy
-            for (Cowboy cowboy : world.getCowboys()) {
-                if(flagDrawShot) {
-                    cowboy.setState(Cowboy.State.IDLE);
-                    flagFinishShot = true;
-                }else if (cowboy.getCowboyId() == touchId) { //Cowboy who get touch in time
-                    Log.d("TOUCH COWBOY ID", Integer.toString(cowboy.getCowboyId()));
-                    if(!cowboy.isFlagShot() && winId==0) { //Cowboy who follow rule
-                        cowboy.setState(Cowboy.State.SHOOT);
-                        cowboy.addScore();
-                        cowboy.setFlagShot(true);
-                        cowboy.setFlagHit(true);
-                        cowboy.setSpeed(shootSpeedTime);
-                        winId = cowboy.getCowboyId();
-                        hitSound.play();
-                        winSound.play();
-                    }else if(cowboy.isFlagShot() && !cowboy.isFlagHit()){ //Cowboy who not follow rule
-                        //cowboy do nothing
-                    }else{ //Cowboy who win at the round and still get touch
-                        //cowboy do nothing
-                        missSound.play();
+            Cowboy touchedCowboy = getTouchedCowboy(touchId);
+            Cowboy enemyCowboy = getEnemyCowboy(touchId);
+
+            if(winId == 0){
+                if(buttonType.equals("hide")){
+                    touchedCowboy.setState(Cowboy.State.HIDE);
+                    touchedCowboy.setSpeed(shootSpeedTime);
+                }else if(buttonType.equals("idle")) {
+                    touchedCowboy.setState(Cowboy.State.IDLE);
+                    touchedCowboy.setSpeed(0);
+                }else if(buttonType.equals("shoot")){
+                    if (!touchedCowboy.isFlagShot() && touchedCowboy.getState().equals(Cowboy.State.IDLE)) { //Cowboy who follow rule
+                        touchedCowboy.setState(Cowboy.State.SHOOT);
+                        touchedCowboy.setFlagShot(true);
+                        touchedCowboy.setFlagHit(true);
+                        touchedCowboy.setSpeed(shootSpeedTime);
+
+                        if(enemyCowboy.getState().equals(Cowboy.State.IDLE)){
+                            touchedCowboy.addScore();
+                            winId = touchId;
+                            hitSound.play();
+                            winSound.play();
+                            enemyCowboy.setState(Cowboy.State.LOSE);
+                        }else if(enemyCowboy.getState().equals(Cowboy.State.SHOOT)){
+                            if(touchedCowboy.getSpeed() < enemyCowboy.getSpeed() && enemyCowboy.getSpeed()!= 0){
+                                touchedCowboy.addScore();
+                                winId = touchId;
+                                hitSound.play();
+                                winSound.play();
+                            }
+                        }else if(enemyCowboy.getState().equals((Cowboy.State.HIDE))){
+                            missSound.play();
+                        }
                     }
                 }
-                scoreBoardText+= "P"+cowboy.getCowboyId()+": " + cowboy.getScore() + " ; ";
             }
-            //search for lose cowboy
+
+            if(touchedCowboy.isFlagShot() && enemyCowboy.isFlagShot() && winId == 0){
+                flagDrawShot = true;
+            }
+
             for (Cowboy cowboy : world.getCowboys()) {
-                if(!flagDrawShot && winId != cowboy.getCowboyId() && winId != 0){
-                    cowboy.setState(Cowboy.State.LOSE);
-                }
+                scoreBoardText += "P" + cowboy.getCowboyId() + ": " + cowboy.getScore() + " ; ";
             }
 
             if(gameMode.getGameType().equals(GameMode.GameType.CLASSIC))
                 scoreBoardText += "Round: " + gameMode.getRound();
-        }else{
-            boolean allShot = true;
-            for (Cowboy cowboy : world.getCowboys()) {
-                if (cowboy.getCowboyId() == touchId) {
-                    if(!cowboy.isFlagShot()) {
-                        cowboy.setState(Cowboy.State.SHOOT);
-                        cowboy.setFlagShot(true);
-                        cowboy.setFlagHit(false);
-                        missSound.play();
-                    }
-                }
-                if(!cowboy.isFlagShot()) {
-                    allShot = false;
-                }
-            }
-
-            if(allShot)
-                flagDrawShot = true;
         }
-
-        this.cam.unproject(tp.set(screenX, screenY, 0));
-        dragging = true;
-        return true;
-    }
-
-    @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-        if (pointer > 0) return false;
-        this.cam.unproject(tp.set(screenX, screenY, 0));
-        dragging = false;
-        return true;
-    }
-
-    Vector3 tp = new Vector3();
-    boolean dragging;
-    @Override public boolean mouseMoved (int screenX, int screenY) {
-        // we can also handle mouse movement without anything pressed
-//      camera.unproject(tp.set(screenX, screenY, 0));
-        return false;
-    }
-
-    @Override public boolean touchDragged (int screenX, int screenY, int pointer) {
-        if (!dragging) return false;
-        this.cam.unproject(tp.set(screenX, screenY, 0));
-        return true;
-    }
-
-    @Override public boolean keyDown (int keycode) {
-        return false;
-    }
-
-    @Override public boolean keyUp (int keycode) {
-        return false;
-    }
-
-    @Override public boolean keyTyped (char character) {
-        return false;
-    }
-
-    @Override public boolean scrolled (int amount) {
-        return false;
     }
 
     @Override
     public void buildStage() {
+        float ppux = 320.0f / cam.viewportWidth;
+        float ppuy = 240.0f / cam.viewportHeight;
+        ImageButton btnShotLeft = UIFactory.createButton(new Texture(Gdx.files.internal("img/shot-left.png")));
+        btnShotLeft.setPosition(0, 0 * ppuy);
+        btnShotLeft.setSize(1.5f*ppux, 3*ppuy);
+        addActor(btnShotLeft);
 
+        ImageButton btnHideLeft = UIFactory.createButton(new Texture(Gdx.files.internal("img/hide-left.png")));
+        btnHideLeft.setPosition(0, 4 * ppuy);
+        btnHideLeft.setSize(1.5f * ppux, 3 * ppuy);
+        addActor(btnHideLeft);
+
+        ImageButton btnShotRight = UIFactory.createButton(new Texture(Gdx.files.internal("img/shot-right.png")));
+        btnShotRight.setPosition((cam.viewportWidth - 1.5f) * ppux, 4 * ppuy);
+        btnShotRight.setSize(1.5f * ppux, 3 * ppuy);
+        addActor(btnShotRight);
+
+        ImageButton btnHideRight = UIFactory.createButton(new Texture(Gdx.files.internal("img/hide-right.png")));
+        btnHideRight.setPosition((cam.viewportWidth - 1.5f) * ppux, 0 * ppuy);
+        btnHideRight.setSize(1.5f * ppux, 3 * ppuy);
+        addActor(btnHideRight);
+
+        btnShotLeft.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(1, "shoot");
+                return true;
+            }
+        });
+        btnShotRight.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(2, "shoot");
+                return true;
+            }
+        });
+
+        btnHideLeft.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(1, "hide");
+                return true;
+            }
+
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(1, "idle");
+            }
+        });
+        btnHideRight.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(2, "hide");
+                return true;
+            }
+
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                buttonTouch(2, "idle");
+            }
+        });
+        //Gdx.input.setInputProcessor(this);
     }
 
     @Override

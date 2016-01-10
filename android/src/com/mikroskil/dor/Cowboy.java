@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Cowboy {
 
     public enum State {
-        IDLE, SHOOT, WIN, LOSE
+        IDLE, SHOOT, WIN, LOSE, HIDE
     }
 
     static final float SIZE = 1f; // half a unit
