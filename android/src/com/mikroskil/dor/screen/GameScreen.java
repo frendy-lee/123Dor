@@ -77,8 +77,10 @@ public class GameScreen extends AbstractScreen{
     float winStateTime=0; //state time for win animation
 
     //game setting
-    private String scoreBoardText;
-    private String counterText;
+    private String scoreBoardText,
+            counterText,
+            cowboy1Notif,
+            cowboy2Notif;
     private int winId=0;
     public int roundFlag;
     public GameMode gameMode;
@@ -89,15 +91,20 @@ public class GameScreen extends AbstractScreen{
     private boolean flagEndGame = false;
     private boolean flagCounterEnd = false;
     private boolean flagCounterStart = false;
+    private boolean bothCowboyReady = false;
     float counterStateTime = 0;
     float shootSpeedTime = 0;
     int randomBang=0;
     int score_limit = 0;
     int highest_score = 0;
     Array<Sprite> cowboySprite = new Array<Sprite>();
-    BitmapFont scoreBoardBitmap;
-    GlyphLayout glyphLayoutScore = new GlyphLayout();
-    BitmapFont counterBitmap;
+    GlyphLayout glyphLayoutScore = new GlyphLayout(),
+            glyphLayoutCowboy1Notif = new GlyphLayout(),
+            glyphLayoutCowboy2Notif = new GlyphLayout();
+    BitmapFont scoreBoardBitmap,
+            counterBitmap,
+            cowboy1NotifBitmap,
+            cowboy2NotifBitmap;
     Random rn = new Random();
 
     public GameScreen(GameMode.GameType GT, boolean debug) {
@@ -110,11 +117,16 @@ public class GameScreen extends AbstractScreen{
         this.debug = debug;
         spriteBatch = new SpriteBatch();
         scoreBoardBitmap = new BitmapFont();
+        counterBitmap = new BitmapFont();
+        cowboy1NotifBitmap = new BitmapFont();
+        cowboy2NotifBitmap = new BitmapFont();
         scoreBoardText = "P1: 0 ; P2: 0 ;";
         if(gameMode.getGameType().equals(GameMode.GameType.CLASSIC))
             scoreBoardText+= "Round: 1";
-        counterBitmap = new BitmapFont();
         counterText = "Touch to Start";
+        cowboy1Notif = "";
+        cowboy2Notif = "";
+
         stateTime =0 ;
         loadTextures();
         loadSound();
@@ -221,6 +233,7 @@ public class GameScreen extends AbstractScreen{
             cowboy.setState(Cowboy.State.IDLE);
             cowboy.setFlagShot(false);
             cowboy.setFlagHit(false);
+            cowboy.setFlagReady(false);
         }
 
         if(gameMode.getGameType().equals(GameMode.GameType.CLASSIC)) {
@@ -358,7 +371,17 @@ public class GameScreen extends AbstractScreen{
         glyphLayoutScore.setText(scoreBoardBitmap, scoreBoardText);
         scoreBoardBitmap.setColor(0, 0, 0, 1);
         scoreBoardBitmap.getData().setScale(3, 3);
-        scoreBoardBitmap.draw(batch, scoreBoardText, (Gdx.graphics.getWidth() / 2)-(glyphLayoutScore.width/2), Gdx.graphics.getHeight());
+        scoreBoardBitmap.draw(batch, scoreBoardText, (Gdx.graphics.getWidth() / 2) - (glyphLayoutScore.width / 2), Gdx.graphics.getHeight());
+
+        glyphLayoutCowboy1Notif.setText(cowboy1NotifBitmap, cowboy1Notif);
+        cowboy1NotifBitmap.setColor(0, 0, 0, 1);
+        cowboy1NotifBitmap.getData().setScale(3, 3);
+        cowboy1NotifBitmap.draw(batch, cowboy1Notif, 2.5f * ppuX, 1 * ppuY);
+
+        glyphLayoutCowboy2Notif.setText(cowboy1NotifBitmap, cowboy2Notif);
+        cowboy2NotifBitmap.setColor(0, 0, 0, 1);
+        cowboy2NotifBitmap.getData().setScale(3, 3);
+        cowboy2NotifBitmap.draw(batch, cowboy2Notif, 6.5f * ppuX, 1 * ppuY);
     }
 
     private void drawCounter(SpriteBatch batch){
@@ -373,20 +396,27 @@ public class GameScreen extends AbstractScreen{
                 flagCounterStart = false;
                 flagStartShot = true;
                 counterStateTime = 0;
+                cowboy1Notif = "";
+                cowboy2Notif = "";
             }else {
                 counterText = "";
             }
         }
 
         if(!flagStartGame){
-            counterText = "Touch to Start";
+            counterText = "Press Shot Button to Start";
         }else if(flagFinishShot){
-            counterText = "Speed : ";
+            counterText = "Kill Speed \n";
             for(Cowboy cowboy : world.getCowboys()) {
+                DecimalFormat df = new DecimalFormat("0.0000");
                 if(cowboy.getCowboyId() == winId){
-                    DecimalFormat df = new DecimalFormat("0.0000");
                     counterText+= df.format(cowboy.getSpeed());
                 }
+
+                if (cowboy.getCowboyId() == 1)
+                    cowboy1Notif = "Top Speed \n"+df.format(cowboy.getTopSpeed());
+                else
+                    cowboy2Notif = "Top Speed \n"+df.format(cowboy.getTopSpeed());
             }
         }
 
@@ -438,9 +468,9 @@ public class GameScreen extends AbstractScreen{
         return null;
     }
 
-
-
     private void buttonTouch(int touchId, String buttonType){
+        Cowboy touchedCowboy = getTouchedCowboy(touchId);
+        Cowboy enemyCowboy = getEnemyCowboy(touchId);
         if(flagEndGame){
             ScreenManager.getInstance().showScreen(ScreenEnum.LEVEL_SELECT, null);
         }else if(flagDrawShot){
@@ -449,10 +479,34 @@ public class GameScreen extends AbstractScreen{
             flagDrawShot = false;
             flagFinishShot = true;
         }else if(!flagStartGame) {
-            reloadSound.play();
-            flagStartGame = true;
-            flagCounterStart = true;
-            loadGameMode();
+            if(buttonType.equals("shoot")){
+                if(!touchedCowboy.isFlagReady()){
+                    reloadSound.play();
+                    touchedCowboy.setFlagReady(true);
+                }
+
+                if(touchedCowboy.isFlagReady() && enemyCowboy.isFlagReady()){
+                    bothCowboyReady = true;
+                    flagStartGame = true;
+                    flagCounterStart = true;
+
+                    if(touchedCowboy.isFlagReady()) {
+                        if (touchedCowboy.getCowboyId() == 1)
+                            cowboy1Notif = "Ready";
+                        else
+                            cowboy2Notif = "Ready";
+                    }
+
+                    loadGameMode();
+                }
+
+                if(touchedCowboy.isFlagReady()) {
+                    if (touchedCowboy.getCowboyId() == 1)
+                        cowboy1Notif = "Ready";
+                    else
+                        cowboy2Notif = "Ready";
+                }
+            }
         }else if(flagFinishShot){
             loadGameMode();
             scoreBoardText = "";
@@ -463,9 +517,6 @@ public class GameScreen extends AbstractScreen{
                 scoreBoardText += "Round: " + gameMode.getRound();
         }else if(flagStartShot){
             scoreBoardText="";
-            Cowboy touchedCowboy = getTouchedCowboy(touchId);
-            Cowboy enemyCowboy = getEnemyCowboy(touchId);
-
             if(winId == 0){
                 if(buttonType.equals("hide")){
                     touchedCowboy.setState(Cowboy.State.HIDE);
@@ -485,6 +536,13 @@ public class GameScreen extends AbstractScreen{
                             winId = touchId;
                             hitSound.play();
                             winSound.play();
+
+                            Log.d("touched speed", Float.toString(touchedCowboy.getSpeed()));
+                            if(touchedCowboy.getTopSpeed() == 0)
+                                touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
+                            else if(touchedCowboy.getSpeed() < touchedCowboy.getTopSpeed())
+                                touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
+
                             enemyCowboy.setState(Cowboy.State.LOSE);
                         }else if(enemyCowboy.getState().equals(Cowboy.State.SHOOT)){
                             if(touchedCowboy.getSpeed() < enemyCowboy.getSpeed() && enemyCowboy.getSpeed()!= 0){

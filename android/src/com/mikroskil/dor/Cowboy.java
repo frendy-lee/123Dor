@@ -17,11 +17,13 @@ public class Cowboy {
     int score=0;
     int score_limit = 0;
     float speed;
+    float topSpeed = 0;
     Vector2 position = new Vector2();
     Rectangle bounds = new Rectangle();
     State state = State.IDLE;
     boolean flagHit = false;
     boolean flagShot = false;
+    boolean flagReady = false;
 
     public State getState(){
         return state;
@@ -47,6 +49,13 @@ public class Cowboy {
     }
     public int getScore_limit(){
         return this.score_limit;
+    }
+
+    public void setTopSpeed(float speed){
+        this.topSpeed = speed;
+    }
+    public float getTopSpeed(){
+        return this.topSpeed;
     }
 
     public void setSpeed(float speed){
@@ -79,6 +88,13 @@ public class Cowboy {
     }
     public void setFlagShot(boolean flag){
         this.flagShot = flag;
+    }
+
+    public boolean isFlagReady() {
+        return this.flagReady;
+    }
+    public void setFlagReady(boolean flag){
+        this.flagReady = flag;
     }
 
     public float getSize(){
