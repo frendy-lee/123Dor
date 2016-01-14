@@ -528,7 +528,6 @@ public class GameScreen extends AbstractScreen{
                     if (!touchedCowboy.isFlagShot() && touchedCowboy.getState().equals(Cowboy.State.IDLE)) { //Cowboy who follow rule
                         touchedCowboy.setState(Cowboy.State.SHOOT);
                         touchedCowboy.setFlagShot(true);
-                        touchedCowboy.setFlagHit(true);
                         touchedCowboy.setSpeed(shootSpeedTime);
 
                         if(enemyCowboy.getState().equals(Cowboy.State.IDLE)){
@@ -536,6 +535,8 @@ public class GameScreen extends AbstractScreen{
                             winId = touchId;
                             hitSound.play();
                             winSound.play();
+                            touchedCowboy.setFlagHit(true);
+                            enemyCowboy.setState(Cowboy.State.LOSE);
 
                             Log.d("touched speed", Float.toString(touchedCowboy.getSpeed()));
                             if(touchedCowboy.getTopSpeed() == 0)
@@ -543,23 +544,38 @@ public class GameScreen extends AbstractScreen{
                             else if(touchedCowboy.getSpeed() < touchedCowboy.getTopSpeed())
                                 touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
 
-                            enemyCowboy.setState(Cowboy.State.LOSE);
                         }else if(enemyCowboy.getState().equals(Cowboy.State.SHOOT)){
-                            if(touchedCowboy.getSpeed() < enemyCowboy.getSpeed() && enemyCowboy.getSpeed()!= 0){
+                            if(touchedCowboy.getSpeed() < enemyCowboy.getSpeed() && enemyCowboy.getSpeed()!= 0) {
                                 touchedCowboy.addScore();
                                 winId = touchId;
                                 hitSound.play();
                                 winSound.play();
+                                touchedCowboy.setFlagHit(true);
+                                enemyCowboy.setState(Cowboy.State.LOSE);
+                                if (touchedCowboy.getTopSpeed() == 0)
+                                    touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
+                                else if (touchedCowboy.getSpeed() < touchedCowboy.getTopSpeed())
+                                    touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
+                            }else if(touchedCowboy.getSpeed() > enemyCowboy.getSpeed() && !enemyCowboy.isFlagHit() && enemyCowboy.isFlagShot()){
+                                touchedCowboy.addScore();
+                                winId = touchId;
+                                hitSound.play();
+                                winSound.play();
+                                touchedCowboy.setFlagHit(true);
+                                enemyCowboy.setState(Cowboy.State.LOSE);
+                                if (touchedCowboy.getTopSpeed() == 0)
+                                    touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
+                                else if (touchedCowboy.getSpeed() < touchedCowboy.getTopSpeed())
+                                    touchedCowboy.setTopSpeed(touchedCowboy.getSpeed());
                             }
                         }else if(enemyCowboy.getState().equals((Cowboy.State.HIDE))){
                             missSound.play();
+                            if(touchedCowboy.isFlagShot() && enemyCowboy.isFlagShot() && winId == 0){
+                                flagDrawShot = true;
+                            }
                         }
                     }
                 }
-            }
-
-            if(touchedCowboy.isFlagShot() && enemyCowboy.isFlagShot() && winId == 0){
-                flagDrawShot = true;
             }
 
             for (Cowboy cowboy : world.getCowboys()) {
